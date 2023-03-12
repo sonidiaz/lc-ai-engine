@@ -51,7 +51,7 @@ class LC_DataSet {
         'method'      => 'POST',
         'headers' => array(
           'Content-Type' => 'application/json',
-          'Authorization' => 'Bearer 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'
+          'Authorization' => 'Bearer '
        ),
         'body' => json_encode(array(
           'model' => "text-davinci-003",
