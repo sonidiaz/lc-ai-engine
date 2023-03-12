@@ -32,10 +32,12 @@ class LC_DataSet {
     function lc_endpoint_init() {
       register_rest_route( 'lc/v1', '/pages/', array(
         'methods' => 'GET',
+        'permission_callback' => "__return_true",
         'callback' => 'getWpPagesContent'
       ) );
       register_rest_route( 'lc/v1', '/page/(?P<id>\d+)', array(
         'methods' => 'GET',
+        'permission_callback' => "__return_true",
         'callback' => 'getWpPageContent',
       ) );
     }
@@ -55,13 +57,13 @@ class LC_DataSet {
        ),
         'body' => json_encode(array(
           'model' => "text-davinci-003",
-          "prompt" => $contentCleaner,
+          "prompt" => 'Crea 3 preguntas y sus respuestas a partir del siguiente texto: '.$contentCleaner,
           "temperature" => 0.8,
           "max_tokens" => 1700
         )),
       ));
-      $prevText = json_decode($respGPT['body'])->choices[0]->text;
-      $contentGPT = preg_replace('/[\n\t]/', ' ', $prevText);
+  
+      $contentGPT = json_decode($respGPT['body'])->choices[0]->text;
 
 
       array_push($dataTemp, array(
@@ -69,7 +71,7 @@ class LC_DataSet {
         "title" => $dataRemote->title->rendered, 
         "yoast_title" => $dataRemote->yoast_head_json->title,
         "yoast_description" => $dataRemote->yoast_head_json->description,
-        "content" => $contentCleaner,
+        "content" => $contentGPT,
 
       ));
       return rest_ensure_response($dataTemp); 
